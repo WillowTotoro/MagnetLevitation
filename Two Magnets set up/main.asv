@@ -1,0 +1,53 @@
+close all;
+clc;
+p1 = [-5, 1];
+p2 = [5, 101];
+step = (p2(1)-p1(1))/(p2(2)-p1(2)) ;
+gradient = (p2(2)-p1(2))/(p2(1)-p1(1));
+intersect = 1-(-5)*gradient;
+X = -5:step:5;
+Y = -5:step:5;
+
+FXM = zeros(length(X), length(Y));
+FYM = zeros(length(X), length(Y));
+torM = zeros(length(X), length(Y));
+
+X1 = 0;
+Y1 = 0;
+
+for i = X
+	for j = Y
+		ii = int16(i*gradient+intersect);
+		jj = int16(j*gradient+intersect);
+        if sqrt((i-X1)^2+(j-Y1)^2) < 1.5
+            FYM(ii,jj)= 0;
+            FXM(ii,jj)= 0;
+            torM(ii,jj) = 0;
+        else 
+            [FXM(ii,jj),FYM(ii,jj),torM(ii,jj)] = magnet(X1,Y1,i,j);
+        end
+	end	
+end
+
+
+
+[a,b] = meshgrid(X,Y);
+
+
+
+figure
+% subplot(2,2,3);
+contourf(b, a, torM);
+title('torque ж╚ = 90бу')
+colorbar;
+
+figure
+% subplot(2,2,4);
+quiver(b, a, FXM,FYM)
+title('Total Force ж╚ = 90бу')
+
+
+
+
+
+

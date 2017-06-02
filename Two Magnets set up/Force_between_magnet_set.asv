@@ -1,0 +1,37 @@
+
+
+
+
+function [torque,FX,FY,X,Y] = Force_between_magnet_set(range,V1,V2)
+C1 = [1,-1];
+number = 100;
+
+X1 = C1(1);
+Y1 = C1(2);
+
+
+FXM = zeros(length(X), length(Y));
+FYM = zeros(length(X), length(Y));
+torM = zeros(length(X), length(Y));
+
+[gradient,intersect,X,Y] = step_final(range , number);
+
+for i = X
+	for j = Y
+		ii = int16(i*gradient+intersect);
+		jj = int16(j*gradient+intersect);
+        if sqrt((i-X)^2+(j-Y)^2) < 1.5
+            FYM(ii,jj)= 0;
+            FXM(ii,jj)= 0;
+            torM(ii,jj) = 0;
+        else 
+            [FXM(ii,jj),FYM(ii,jj),torM(ii,jj)] = magnet(X1,Y1,i,j,V1,V2);
+        end
+	end	
+end
+
+torque = torM;
+FX = FXM;
+FY = FYM;
+
+end
